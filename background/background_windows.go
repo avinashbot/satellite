@@ -25,7 +25,7 @@ func Set(img image.Image) error {
 	if err != nil {
 		return err
 	}
-	imgPath := filepath.Join(usr.HomeDir, "AppData", "Roaming", "Himawari")
+	imgPath := filepath.Join(usr.HomeDir, "AppData", "Roaming", "Himawari", "background.png")
 
 	// Create the file.
 	if err := createFile(img, imgPath); err != nil {
@@ -36,7 +36,7 @@ func Set(img image.Image) error {
 	proc.Call(
 		spiSETDESKWALLPAPER,
 		0,
-		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(path))),
+		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(imgPath))),
 		spifUPDATEINIFILE,
 	)
 	return nil
