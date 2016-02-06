@@ -1,6 +1,8 @@
 # himawari
 
-![Screenshot](https://i.imgur.com/XKuMLvA.png)
+<a href="https://gfycat.com/NeedyCavernousGecko">
+    <img src="https://i.imgur.com/n0lzrom.gif">
+</a>
 
 ```bash
 # Usage:
