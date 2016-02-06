@@ -6,5 +6,7 @@
 
 ```bash
 # Usage:
-$ himawari -depth 4 -every 600
+$ himawari -depth 4 -once
+$ himawari -depth 8 -every 60
+$ himawari -depth 20 # This will result in a massive image!
 ```

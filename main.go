@@ -19,11 +19,13 @@ const (
 var (
 	depth int
 	every int64
+	once  bool
 )
 
 func init() {
 	flag.IntVar(&depth, "depth", 4, "Resolution of the image. One of 4, 8, 16, 20.")
-	flag.Int64Var(&every, "every", 0, "Optionally re-run every x seconds.")
+	flag.Int64Var(&every, "every", 600, "Re-run every x seconds.")
+	flag.BoolVar(&once, "once", false, "Set the background and exit.")
 }
 
 func run(t *time.Time) error {
@@ -91,7 +93,7 @@ func main() {
 		t = *newt
 
 		// If we're only running this once, exit.
-		if every <= 0 {
+		if once {
 			break
 		}
 	}
