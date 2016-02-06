@@ -22,7 +22,5 @@ func Set(img image.Image) error {
 	}
 
 	// Only tested on El Capitan
-	err = exec.Command("osascript", "-e", `tell application "Finder" to set desktop picture to POSIX file "`+imgPath+`"`).Run()
-
-	return err
+	return exec.Command("osascript", "-e", `tell application "Finder" to set desktop picture to POSIX file "`+imgPath+`"`).Run()
 }

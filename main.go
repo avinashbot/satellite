@@ -11,6 +11,11 @@ import (
 	"github.com/avinashbot/himawari/download"
 )
 
+const (
+	// The width and height of the returned grid part.
+	gridSize = 550
+)
+
 var (
 	depth int
 	every int64
@@ -43,13 +48,13 @@ func run(t *time.Time) error {
 		}
 	}
 	wg.Wait()
-	log.Printf("Done! Downloading images took %s.", time.Now().Sub(startTime))
+	log.Printf("Done! Downloading images took %s.\n", time.Now().Sub(startTime))
 
 	// Join the pieces and set the background image.
-	// A depth=20 crashed my computer around this part, so watch out.
+	// A depth=20 crashed my VM around this part, so watch out.
 	var img image.Image
-	img = background.Join(m, 550*depth, 550*depth)
-	img = background.Expand(img, 16/9)
+	img = background.Join(m, gridSize*depth, gridSize*depth)
+	img = background.Expand(img, 16/9) // FIXME
 
 	log.Println("Setting image as background...")
 	return background.Set(img)
@@ -58,39 +63,36 @@ func run(t *time.Time) error {
 func main() {
 	flag.Parse()
 
-	// Get the latest timestamp.
-	t, err := download.Latest()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	log.Printf("The latest image is at %s.", t)
+	// Start off with a dummy time.
+	t := time.Unix(0, 0)
 
-	// Run the first time.
-	if err := run(t); err != nil {
-		log.Fatalln(err)
-	}
+	// Run the program.
+	for ticker := time.NewTicker(time.Duration(every) * time.Second); ; <-ticker.C {
+		// Get the latest timestamp.
+		newt, err := download.Latest()
+		if err != nil {
+			continue // The update server threw an error. Try later.
+		}
+		log.Printf("The latest image is at %s.\n", newt)
 
-	// Run this baby repeatedly.
-	if every > 0 {
-		ticker := time.NewTicker(time.Duration(every) * time.Second)
-		for {
-			// Get the latest timestamp for the second time.
-			newt, err := download.Latest()
-			if err != nil {
-				log.Println(err)
-				continue // Restart the download.
-			}
+		// Skip if the latest time hasn't changed.
+		if newt.Equal(t) {
+			log.Println("The image has not changed. Waiting...")
+			continue
+		}
 
-			if !newt.Equal(*t) {
-				t = newt
-				log.Printf("The latest image is at %s.", newt)
-				if err := run(t); err != nil {
-					log.Print(err)
-				}
-			}
+		// If it has, run it.
+		if err = run(newt); err != nil {
+			log.Println(err)
+			continue
+		}
 
-			// Wait until the next tick.
-			<-ticker.C
+		// Everything has succeeded, set the time to the latest image time.
+		t = *newt
+
+		// If we're only running this once, exit.
+		if every <= 0 {
+			break
 		}
 	}
 }
