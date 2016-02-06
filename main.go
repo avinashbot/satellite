@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/avinashbot/himawari/background"
-	"github.com/avinashbot/himawari/download"
+	"github.com/avinashbot/himawari/himawari"
 )
 
 const (
@@ -47,7 +47,7 @@ func run(t *time.Time) error {
 			wg.Add(1)
 			go func(i, j int) {
 				defer wg.Done()
-				m[i][j], err = download.GridAt(t, depth, i, j)
+				m[i][j], err = himawari.GridAt(t, depth, i, j)
 			}(i, j)
 		}
 	}
@@ -73,7 +73,7 @@ func main() {
 	// Run the program.
 	for ticker := time.NewTicker(time.Duration(every) * time.Second); ; <-ticker.C {
 		// Get the latest timestamp.
-		newt, err := download.Latest()
+		newt, err := himawari.Latest()
 		if err != nil {
 			continue // The update server threw an error. Try later.
 		}
