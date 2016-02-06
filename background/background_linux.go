@@ -14,7 +14,7 @@ func Set(img image.Image) error {
 	if err != nil {
 		return err
 	}
-	imgPath := filepath.Join(usr.HomeDir, ".himawari", "background.png")
+	imgPath := filepath.Join(usr.HomeDir, ".local", "share", "himawari", "background.png")
 
 	// Create the file.
 	if err := createFile(img, imgPath); err != nil {
