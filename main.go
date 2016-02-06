@@ -20,12 +20,14 @@ var (
 	depth int
 	every int64
 	once  bool
+	dsc   bool
 )
 
 func init() {
 	flag.IntVar(&depth, "depth", 4, "Resolution of the image. One of 4, 8, 16, 20.")
 	flag.Int64Var(&every, "every", 600, "Re-run every x seconds.")
 	flag.BoolVar(&once, "once", false, "Set the background and exit.")
+	flag.BoolVar(&dsc, "dscovr", false, "Use DSCOVR imagery. It's not geostationary though.")
 }
 
 func run(t *time.Time) error {
