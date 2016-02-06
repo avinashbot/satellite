@@ -55,10 +55,10 @@ func GridAt(t *time.Time, depth, row, col int) (image.Image, error) {
 
 	// Get the image from the url.
 	res, err := http.Get(buf.String())
-	defer res.Body.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	// Create an image from the response.
 	img, _, err := image.Decode(res.Body)
