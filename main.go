@@ -46,6 +46,7 @@ func main() {
 		filename, err := dl.ModifiedSince(lastTime)
 		if err != nil {
 			log.Println(err)
+			continue
 		}
 		if filename == "" {
 			log.Println("No changes since last time. Trying again later...")
