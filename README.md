@@ -4,9 +4,11 @@
 
 ## Himawari
 
+[**Latest Release**](https://github.com/avinashbot/himawari/releases/latest)
+
 ```bash
 # Usage:
-$ himawari -depth 4 -once
-$ himawari -depth 8 -every 60
+$ himawari -depth 4 -every 60s
+$ himawari -satellite dscovr
 $ himawari -depth 20 # This will result in a massive image!
 ```
