@@ -9,11 +9,6 @@ import (
 	"github.com/avinashbot/himawari/download"
 )
 
-const (
-	// The width and height of the returned grid part.
-	gridSize = 550
-)
-
 var (
 	satellite string
 	depth     int
