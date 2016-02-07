@@ -1,7 +1,6 @@
 package download
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"image"
@@ -73,12 +72,8 @@ func (d Dscovr) ModifiedSince(after time.Time) (string, error) {
 
 // Download the image. Duh.
 func (d Dscovr) Download(filename string) (image.Image, error) {
-	// Construct the url.
-	buf := new(bytes.Buffer)
-	fmt.Fprintf(buf, dsImagePath, filename)
-
 	// Get the response from the url.
-	res, err := http.Get(buf.String())
+	res, err := http.Get(fmt.Sprintf(dsImagePath, filename))
 	if err != nil {
 		return nil, err
 	}
