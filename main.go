@@ -2,13 +2,11 @@ package main
 
 import (
 	"flag"
-	"image"
 	"log"
-	"sync"
 	"time"
 
 	"github.com/avinashbot/himawari/background"
-	"github.com/avinashbot/himawari/himawari"
+	"github.com/avinashbot/himawari/download"
 )
 
 const (
@@ -17,85 +15,66 @@ const (
 )
 
 var (
-	depth int
-	every int64
-	once  bool
-	dsc   bool
+	satellite string
+	depth     int
+	every     time.Duration
 )
 
 func init() {
-	flag.IntVar(&depth, "depth", 4, "Resolution of the image. One of 4, 8, 16, 20.")
-	flag.Int64Var(&every, "every", 600, "Re-run every x seconds.")
-	flag.BoolVar(&once, "once", false, "Set the background and exit.")
-	flag.BoolVar(&dsc, "dscovr", false, "Use DSCOVR imagery. It's not geostationary though.")
-}
-
-func run(t *time.Time) error {
-	// Make the image grid.
-	m := make([][]image.Image, depth)
-	for i := range m {
-		m[i] = make([]image.Image, depth)
-	}
-
-	// Download images in parallel. Woo go!
-	log.Println("Starting download...")
-	startTime := time.Now()
-	var wg sync.WaitGroup
-	var err error
-	for i := 0; i < depth; i++ {
-		for j := 0; j < depth; j++ {
-			wg.Add(1)
-			go func(i, j int) {
-				defer wg.Done()
-				m[i][j], err = himawari.GridAt(t, depth, i, j)
-			}(i, j)
-		}
-	}
-	wg.Wait()
-	log.Printf("Done! Downloading images took %s.\n", time.Now().Sub(startTime))
-
-	// Join the pieces and set the background image.
-	// A depth=20 crashed my VM around this part, so watch out.
-	var img image.Image
-	img = background.Join(m, gridSize*depth, gridSize*depth)
-	img = background.Expand(img, 16/9) // FIXME
-
-	log.Println("Setting image as background...")
-	return background.Set(img)
+	flag.StringVar(&satellite, "satellite", "himawari", `The satellite to use: "himawari" or "dscovr".`)
+	flag.IntVar(&depth, "depth", 4, "Resolution of the Himawari image. One of 4, 8, 16, 20.")
+	flag.DurationVar(&every, "every", 0, "Time to wait between each rerun.")
 }
 
 func main() {
 	flag.Parse()
 
-	// Start off with a dummy time.
-	t := time.Unix(0, 0)
+	// Set the satellite.
+	var dl download.Downloader
+	switch satellite {
+	case "himawari":
+		dl = download.Himawari{Depth: depth}
+	case "dscovr":
+		dl = download.Dscovr{}
+	default:
+		log.Fatalln("Satellite not recognized. Exiting.")
+	}
 
-	// Run the program.
-	for ticker := time.NewTicker(time.Duration(every) * time.Second); ; <-ticker.C {
-		// Get the latest timestamp.
-		newt, err := himawari.Latest()
+	// Start off with a zero time.
+	for lastTime := (time.Time{}); ; time.Sleep(every) {
+		// Get the filename to the latest image.
+		filename, err := dl.ModifiedSince(lastTime)
 		if err != nil {
-			continue // The update server threw an error. Try later.
+			log.Println(err)
 		}
-		log.Printf("The latest image is at %s.\n", newt)
-
-		// Skip if the latest time hasn't changed.
-		if newt.Equal(t) {
-			log.Println("The image has not changed. Waiting...")
+		if filename == "" {
+			log.Println("No changes since last time. Trying again later...")
 			continue
 		}
 
-		// If it has, run it.
-		if err = run(newt); err != nil {
+		// There is new image out. Download it.
+		log.Println("Starting download...")
+		benchmarkTime := time.Now()
+		img, err := dl.Download(filename)
+		if err != nil {
 			log.Println(err)
 			continue
 		}
+		log.Printf("Done! Download took %s.\n", time.Now().Sub(benchmarkTime))
 
-		// Everything has succeeded, set the time to the latest image time.
-		t = *newt
+		// Set the image as the background.
+		// This one's a serious error, so break if it happens.
+		log.Println("Setting image as background...")
+		if err := background.Set(img); err != nil {
+			log.Println(err)
+			break
+		}
 
-		// If we're only running this once, exit.
-		if once {
+		// Success. Replace lastTime with the current time.
+		lastTime = time.Now()
+
+		// If we're only doing this once, quit.
+		if every == 0 {
 			break
 		}
 	}
