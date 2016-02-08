@@ -36,7 +36,9 @@ func main() {
 	}
 
 	// Start off with a zero time.
-	for lastTime := (time.Time{}); ; time.Sleep(every) {
+	lastTime := time.Time{}
+
+	for ; ; time.Sleep(every) {
 		// Get the filename to the latest image.
 		filename, err := dl.ModifiedSince(lastTime)
 		if err != nil {
@@ -62,8 +64,7 @@ func main() {
 		// This one's a serious error, so break if it happens.
 		log.Println("Setting image as background...")
 		if err := background.Set(img); err != nil {
-			log.Println(err)
-			break
+			log.Fatalln(err)
 		}
 
 		// Success. Replace lastTime with the current time.
