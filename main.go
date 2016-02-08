@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/avinashbot/himawari/background"
-	"github.com/avinashbot/himawari/download"
+	"github.com/avinashbot/satellite/background"
+	"github.com/avinashbot/satellite/download"
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&satellite, "satellite", "himawari", `The satellite to use: "himawari" or "dscovr".`)
+	flag.StringVar(&satellite, "use", "himawari", `The satellite to use: "himawari" or "dscovr".`)
 	flag.IntVar(&depth, "depth", 4, "Resolution of the Himawari image. One of 4, 8, 16, 20.")
 	flag.DurationVar(&every, "every", 0, "Time to wait between each rerun.")
 }

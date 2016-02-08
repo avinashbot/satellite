@@ -2,13 +2,13 @@
     <img src="https://i.imgur.com/n0lzrom.gif">
 </a>
 
-## Himawari
+## Satellite
 
-[**Latest Release**](https://github.com/avinashbot/himawari/releases/latest)
+[**Latest Release**](https://github.com/avinashbot/satellite/releases/latest)
 
 ```bash
 # Usage:
-$ himawari -depth 4 -every 60s
-$ himawari -satellite dscovr
-$ himawari -depth 20 # This will result in a massive image!
+$ satellite -use himawari -depth 4 -every 60s
+$ satellite -use dscovr
+$ satellite -depth 20 # This will result in a massive image!
 ```
