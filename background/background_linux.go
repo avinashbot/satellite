@@ -21,6 +21,12 @@ func Set(img image.Image) error {
 		return err
 	}
 
+	// Darken background area
+	err = exec.Command(
+		"gsettings", "set", "org.gnome.desktop.background",
+		"primary-color", "#000000",
+	).Run()
+
 	// Set the background (gnome3 only atm)
 	err = exec.Command(
 		"gsettings", "set", "org.gnome.desktop.background",
