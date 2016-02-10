@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"errors"
 )
 
 func setGnome3(imgPath string) error {
@@ -27,7 +28,33 @@ func setGnome3(imgPath string) error {
 	).Run()
 }
 
-// Set the background on windows.
+func setMate(imgPath string) error {
+	// Darken background area
+	exec.Command(
+		"gsettings", "set", "org.mate.background",
+		"primary-color", "#000000",
+	).Run()
+
+	// Enable solid background color
+	exec.Command(
+		"gsettings", "set", "org.mate.background",
+		"color-shading-type", "solid",
+	).Run()
+
+	// Set background mode
+	exec.Command(
+		"gsettings", "set", "org.mate.background",
+		"picture-options", "scaled",
+	).Run()
+
+	// Set the background
+	return exec.Command(
+		"gsettings", "set", "org.mate.background",
+		"picture-filename", imgPath,
+	).Run()
+}
+
+// Set the background on linux.
 func Set(img image.Image) error {
 	// Get the absolute path of the directory.
 	imgPath := filepath.Join(os.Getenv("HOME"), ".local", "share", "himawari", "background.png")
@@ -37,5 +64,13 @@ func Set(img image.Image) error {
 		return err
 	}
 
-	return setGnome3(imgPath)
+	env := os.Getenv("XDG_CURRENT_DESKTOP")
+	switch env {
+	case "GNOME":
+		return setGnome3(imgPath)
+	case "MATE":
+		return setMate(imgPath)
+	}
+
+	return errors.New("Desktop environment not recognized.")
 }
