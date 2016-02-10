@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"errors"
 )
 
 func setGnome3(imgPath string) error {
@@ -64,13 +63,12 @@ func Set(img image.Image) error {
 		return err
 	}
 
-	env := os.Getenv("XDG_CURRENT_DESKTOP")
-	switch env {
+	switch os.Getenv("XDG_CURRENT_DESKTOP") {
 	case "GNOME":
 		return setGnome3(imgPath)
 	case "MATE":
 		return setMate(imgPath)
 	}
 
-	return errors.New("Desktop environment not recognized.")
+	return ErrDEUnsupported
 }

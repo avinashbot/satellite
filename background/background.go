@@ -1,10 +1,17 @@
 package background
 
 import (
+	"errors"
 	"image"
 	"image/png"
 	"os"
 	"path/filepath"
+)
+
+var (
+	// ErrDEUnsupported means that I haven't gotten around to implementing
+	// the desktop environment you're using. Submit an issue!
+	ErrDEUnsupported = errors.New("desktop environment not supported")
 )
 
 // Create the background at a given path.
