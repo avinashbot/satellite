@@ -7,22 +7,24 @@ import (
 	"path/filepath"
 )
 
-// Set the background on OSX.
-func Set(img image.Image) error {
+// PlatformDownload dowloads the image to the preferred location for the
+// platform and returns the path it downloaded to.
+func PlatformDownload(img image.Image) (string, error) {
 	// Get the absolute path of the directory.
 	usr, err := user.Current()
 	if err != nil {
-		return err
+		return "", err
 	}
-	imgPath := filepath.Join(usr.HomeDir, "Pictures", "himawari.png")
+	absPath := filepath.Join(usr.HomeDir, "Pictures", "satellite.png")
 
 	// Create the file.
-	if err := createFile(img, imgPath); err != nil {
-		return err
-	}
+	return absPath, DownloadOnly(img, absPath)
+}
 
+// Set the background on OSX.
+func Set(absPath string) error {
 	// Only tested on El Capitan
-	if err := exec.Command("osascript", "-e", `tell application "Finder" to set desktop picture to POSIX file "`+imgPath+`"`).Run(); err != nil {
+	if err := exec.Command("osascript", "-e", `tell application "Finder" to set desktop picture to POSIX file "`+absPath+`"`).Run(); err != nil {
 		return err
 	}
 	return exec.Command("killall", "Dock").Run()

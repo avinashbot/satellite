@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-func setGnome3(imgPath string) error {
+func setGnome3(absPath string) error {
 	// Darken background area
 	exec.Command(
 		"gsettings", "set", "org.gnome.desktop.background",
@@ -23,11 +23,11 @@ func setGnome3(imgPath string) error {
 	// Set the background (gnome3 only atm)
 	return exec.Command(
 		"gsettings", "set", "org.gnome.desktop.background",
-		"picture-uri", "file://"+imgPath,
+		"picture-uri", "file://"+absPath,
 	).Run()
 }
 
-func setMate(imgPath string) error {
+func setMate(absPath string) error {
 	// Darken background area
 	exec.Command(
 		"gsettings", "set", "org.mate.background",
@@ -49,25 +49,28 @@ func setMate(imgPath string) error {
 	// Set the background
 	return exec.Command(
 		"gsettings", "set", "org.mate.background",
-		"picture-filename", imgPath,
+		"picture-filename", absPath,
 	).Run()
 }
 
-// Set the background on linux.
-func Set(img image.Image) error {
+// PlatformDownload dowloads the image to the preferred location for the
+// platform and returns the path it downloaded to.
+func PlatformDownload(img image.Image) (string, error) {
 	// Get the absolute path of the directory.
-	imgPath := filepath.Join(os.Getenv("HOME"), ".local", "share", "himawari", "background.png")
+	homePath := os.Getenv("HOME")
+	absPath := filepath.Join(homePath, ".local", "share", "satellite", "background.png")
 
 	// Create the file.
-	if err := createFile(img, imgPath); err != nil {
-		return err
-	}
+	return absPath, DownloadOnly(img, absPath)
+}
 
+// Set the background on linux.
+func Set(absPath string) error {
 	switch os.Getenv("XDG_CURRENT_DESKTOP") {
 	case "GNOME":
-		return setGnome3(imgPath)
+		return setGnome3(absPath)
 	case "MATE":
-		return setMate(imgPath)
+		return setMate(absPath)
 	}
 
 	return ErrDEUnsupported

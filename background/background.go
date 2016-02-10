@@ -14,8 +14,8 @@ var (
 	ErrDEUnsupported = errors.New("desktop environment not supported")
 )
 
-// Create the background at a given path.
-func createFile(img image.Image, absPath string) error {
+// DownloadOnly just downloads the file to the given path. Doesn't set anything.
+func DownloadOnly(img image.Image, absPath string) error {
 	// Create the directory if it doesn't exist.
 	if err := os.MkdirAll(filepath.Dir(absPath), 0777); err != nil {
 		return err
