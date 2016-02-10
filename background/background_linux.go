@@ -67,7 +67,7 @@ func PlatformDownload(img image.Image) (string, error) {
 // Set the background on linux.
 func Set(absPath string) error {
 	switch os.Getenv("XDG_CURRENT_DESKTOP") {
-	case "GNOME":
+	case "GNOME", "X-Cinnamon":
 		return setGnome3(absPath)
 	case "MATE":
 		return setMate(absPath)
