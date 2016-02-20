@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func setGnome3(absPath string) error {
@@ -66,10 +67,13 @@ func PlatformDownload(img image.Image) (string, error) {
 
 // Set the background on linux.
 func Set(absPath string) error {
-	switch os.Getenv("XDG_CURRENT_DESKTOP") {
-	case "GNOME", "X-Cinnamon":
+	if Desktop == "" {
+		Desktop = os.Getenv("XDG_CURRENT_DESKTOP")
+	}
+	switch strings.ToLower(Desktop) {
+	case "gnome", "x-cinnamon":
 		return setGnome3(absPath)
-	case "MATE":
+	case "mate":
 		return setMate(absPath)
 	}
 

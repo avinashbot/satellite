@@ -25,6 +25,7 @@ func init() {
 
 	flag.StringVar(&downloadPath, "path", "", "The path to download to (default is platform-dependent).")
 	flag.BoolVar(&dontSet, "dontset", false, "Just download the image.")
+	flag.StringVar(&background.Desktop, "desktop", "", "Override desktop environment (\"mate\", \"gnome\"; ignored on non-linux).")
 }
 
 func main() {

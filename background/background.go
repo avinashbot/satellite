@@ -12,6 +12,8 @@ var (
 	// ErrDEUnsupported means that I haven't gotten around to implementing
 	// the desktop environment you're using. Submit an issue!
 	ErrDEUnsupported = errors.New("desktop environment not supported")
+
+	Desktop string
 )
 
 // DownloadOnly just downloads the file to the given path. Doesn't set anything.
