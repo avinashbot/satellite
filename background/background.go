@@ -13,6 +13,7 @@ var (
 	// the desktop environment you're using. Submit an issue!
 	ErrDEUnsupported = errors.New("desktop environment not supported")
 
+	// Desktop is populated with a preferred desktop environment for linux only.
 	Desktop string
 )
 
