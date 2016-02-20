@@ -2,8 +2,8 @@ package background
 
 import (
 	"image"
+	"os"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 )
 
@@ -11,11 +11,8 @@ import (
 // platform and returns the path it downloaded to.
 func PlatformDownload(img image.Image) (string, error) {
 	// Get the absolute path of the directory.
-	usr, err := user.Current()
-	if err != nil {
-		return "", err
-	}
-	absPath := filepath.Join(usr.HomeDir, "Pictures", "satellite.png")
+	homePath := os.Getenv("HOME")
+	absPath := filepath.Join(homePath, "Pictures", "satellite.png")
 
 	// Create the file.
 	return absPath, DownloadOnly(img, absPath)

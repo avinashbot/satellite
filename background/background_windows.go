@@ -2,7 +2,7 @@ package background
 
 import (
 	"image"
-	"os/user"
+	"os"
 	"path/filepath"
 	"syscall"
 	"unsafe"
@@ -22,11 +22,8 @@ var (
 // platform and returns the path it downloaded to.
 func PlatformDownload(img image.Image) (string, error) {
 	// Get the absolute path of the directory.
-	usr, err := user.Current()
-	if err != nil {
-		return "", err
-	}
-	absPath := filepath.Join(usr.HomeDir, "AppData", "Roaming", "Satellite", "background.png")
+	homePath := os.Getenv("HOMEDRIVE") + os.Getenv("HOMEPATH")
+	absPath := filepath.Join(homePath, "AppData", "Roaming", "Satellite", "background.png")
 
 	// Create the file.
 	return absPath, DownloadOnly(img, absPath)
