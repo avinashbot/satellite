@@ -54,6 +54,13 @@ func setMate(absPath string) error {
 	).Run()
 }
 
+func seti3(absPath string) error {
+	// Set the background
+	return exec.Command(
+		"feh", "--bg-max", absPath,
+	).Run()
+}
+
 // PlatformDownload dowloads the image to the preferred location for the
 // platform and returns the path it downloaded to.
 func PlatformDownload(img image.Image) (string, error) {
@@ -75,7 +82,10 @@ func Set(absPath string) error {
 		return setGnome3(absPath)
 	case "mate":
 		return setMate(absPath)
+	case "i3":
+		return seti3(absPath)
 	}
+
 
 	return ErrDEUnsupported
 }
