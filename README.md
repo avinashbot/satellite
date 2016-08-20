@@ -21,3 +21,5 @@ $ satellite -use himawari -depth 4 -every 60s
 $ satellite -use dscovr -path ./images/dscovr/1.png
 $ satellite -depth 20 # This will result in a massive image!
 ```
+
+**Note:** i3 requires `feh` to be installed.
