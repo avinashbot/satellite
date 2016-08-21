@@ -15,7 +15,7 @@
 3. Use your preferred method to run it on login or on a timer (cron, /etc/profile.d, ...)
 4. Enjoy!
 
-**Building from source**
+**Building from source:**
 
 1. Download and install [Go](https://golang.org/dl/).
 2. `go get github.com/avinashbot/satellite`
