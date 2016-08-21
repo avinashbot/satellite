@@ -54,7 +54,7 @@ func setMate(absPath string) error {
 	).Run()
 }
 
-func seti3(absPath string) error {
+func setFeh(absPath string) error {
 	// Set the background
 	return exec.Command(
 		"feh", "--bg-max", absPath,
@@ -74,18 +74,24 @@ func PlatformDownload(img image.Image) (string, error) {
 
 // Set the background on linux.
 func Set(absPath string) error {
-	if Desktop == "" {
-		Desktop = os.Getenv("XDG_CURRENT_DESKTOP")
+	var useDesktop string
+	if CustomDesktop == "" {
+		useDesktop = os.Getenv("XDG_CURRENT_DESKTOP")
+	} else {
+		useDesktop = CustomDesktop
 	}
-	switch strings.ToLower(Desktop) {
+
+	// Check for desktop-specific methods.
+	switch strings.ToLower(useDesktop) {
 	case "gnome", "x-cinnamon":
 		return setGnome3(absPath)
 	case "mate":
 		return setMate(absPath)
-	case "i3":
-		return seti3(absPath)
 	}
 
-
-	return ErrDEUnsupported
+	// None found, now let's try to check if feh is installed.
+	if _, err := exec.LookPath("feh"); err != nil {
+		return ErrDEUnsupported
+	}
+	return setFeh(absPath)
 }

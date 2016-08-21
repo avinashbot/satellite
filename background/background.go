@@ -11,10 +11,11 @@ import (
 var (
 	// ErrDEUnsupported means that I haven't gotten around to implementing
 	// the desktop environment you're using. Submit an issue!
-	ErrDEUnsupported = errors.New("desktop environment not supported")
+	ErrDEUnsupported = errors.New("desktop environment not supported and `feh` not found in PATH. Consider submitting a pull request at github.com/avinashbot/satellite")
 
-	// Desktop is populated with a preferred desktop environment for linux only.
-	Desktop string
+	// CustomDesktop is populated with a preferred desktop environment for linux
+	// only.
+	CustomDesktop string
 )
 
 // DownloadOnly just downloads the file to the given path. Doesn't set anything.

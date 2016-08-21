@@ -21,11 +21,11 @@ var (
 func init() {
 	flag.StringVar(&satellite, "use", "himawari", `The satellite to use: "himawari" or "dscovr".`)
 	flag.IntVar(&depth, "depth", 4, "Resolution of the Himawari image. One of 4, 8, 16, 20.")
-	flag.DurationVar(&every, "every", 0, "Time to wait between each rerun.")
+	flag.DurationVar(&every, "every", 0, "Time to wait between each rerun (default: 0, run just once).")
 
 	flag.StringVar(&downloadPath, "path", "", "The path to download to (default is platform-dependent).")
 	flag.BoolVar(&dontSet, "dontset", false, "Just download the image.")
-	flag.StringVar(&background.Desktop, "desktop", "", "Override desktop environment (\"mate\", \"gnome\" \"i3\"; ignored on non-linux).")
+	flag.StringVar(&background.CustomDesktop, "desktop", "", `Override method ("mate", "gnome", "feh"; ignored on non-linux).`)
 }
 
 func main() {
