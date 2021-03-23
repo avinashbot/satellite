@@ -16,9 +16,9 @@ const (
 	// The width and height of the returned grid part.
 	gridSize = 550
 
-	hwUpdatePath   = "http://himawari8-dl.nict.go.jp/himawari8/img/D531106/latest.json"
+	hwUpdatePath   = "https://himawari8-dl.nict.go.jp/himawari8/img/D531106/latest.json"
 	hwUpdateFormat = "2006-01-02 15:04:05"
-	hwImagePath    = "http://himawari8.nict.go.jp/img/D531106/%dd/550/%s_%d_%d.png"
+	hwImagePath    = "https://himawari8-dl.nict.go.jp/himawari8/img/D531106/%dd/%d/%s_%d_%d.png"
 	hwImageFormat  = "2006/01/02/150405"
 )
 
@@ -33,7 +33,7 @@ type Himawari struct {
 // Return the image at a certain row and column.
 func (h Himawari) gridAt(filename string, row, col int) (image.Image, error) {
 	// Get the image from the url.
-	res, err := http.Get(fmt.Sprintf(hwImagePath, h.Depth, filename, row, col))
+	res, err := http.Get(fmt.Sprintf(hwImagePath, h.Depth, gridSize, filename, row, col))
 	if err != nil {
 		return nil, err
 	}
